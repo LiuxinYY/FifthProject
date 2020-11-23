@@ -28,56 +28,72 @@
     - 打印输出古诗中某个字或词出现的次数
     - 释放资源，关闭输入输出流
 6. 添加内容
-    - 实现一门课程只由一门老师教授：在学生封装类中，判断教师是否教授此门课程，若教授，输出教师信息，若不教授，则只输出学生选课信息
+    - 对输入内容进行数据类型判断（若输入错误，则重新输入）
+    - 利用for循环统计字符串和这段话逐字符进行比较
 # 四、核心代码
 1. 有参和无参构造方法
 ```
 	//有参构造方法
-	public People(int number, String name, Boolean sex, int age) {
+	public Student(String name, int number, boolean sex, int age, String major) {
 		super();
-		this.number = number;
 		this.name = name;
+		this.number = number;
 		this.sex = sex;
 		this.age = age;
+		this.major = major;
 	}
+	
 //	无参构造方法
-	public People() {
+	public Student() {
 		super();
 	}
 ```
-2. Object根类的toString（）方法
+2. 用static定义统计字符串的GetFrequency方法
 ```
-//	Object根类的toString（）方法,判断Boolean类型的男女性别
-	public String toString() {
-		if(sex==true){
-		return "People [编号" + number + ", 名字" + name + ", 性别" + "女"
-				+ ", 年龄" + age + "]";
-		}else
-			return "[编号" + number + ", 名字" + name + ", 性别" + "男"
-					+ ", 年龄" + age + "]";
+static int GetFrequency(String source,String key){
+	int i, j, count = 0;
+	int len1 = source.length(); //这段话的长度
+	int len2 = key.length(); //待统计词语的长度
+	for(i=0; i<len1-len2; i++){
+	for(j=0; j<len2; j++){ //统计词语和这段话逐字符进行比较
+	if(key.charAt(j) != source.charAt(j + i)){
+	break;
+			}
+		}
+	if(j>=key.length()){
+	count++;
+		}
 	}
+	return count;
+}
 ```
-3. 使用super调用父类中的构造方法
+3. 采用Scanner类实现运行时交互式输入
 ```
-//	使用super调用父类中的构造方法
-	public Student(int number, String name, Boolean sex, int age) {
-		super(number, name, sex, age);
-	}
+Scanner scanner1 = new Scanner(System.in);
+		System.out.println("请输入你想查询的字或词：");
+		String key1 = scanner1.nextLine();
+		String key = key1;
+		System.out.println("请输入你的姓名：");
+		String name = scanner1.nextLine();
+		System.out.println("请输入你的学号：");
+		int number=scanner1.nextInt();
+		System.out.println("请输入你的性别：");
+		Boolean sex=scanner1.nextBoolean();
+		System.out.println("请输入你的年龄：");
+		int age=scanner1.nextInt();
+		System.out.println("请输入你的专业：");
+		String major = scanner1.next();
+		
+		Student s1=new Student(name, number, sex, age, major);
 ```
-4. 实现一门课程只由一门老师教授
+4. 调用GetFrequency方法
 ```
-//实现一门课程只由一门老师教授
-	@Override
-	public String toString() {
-		if(tea.getName()==c.getTeacher()){
-			return "学生："+super.toString()+"\n所选课程" +c+"\n教师信息"+tea;
-		}else
-			return "学生："+super.toString()+"\n所选课程" +c;		
-	}
-	public String show(){
-		return "学生："+super.toString();
-		 
-	}
+			FileReader fr1=new FileReader("D:\\Java\\A.txt");
+			BufferedReader bw=new BufferedReader(fr1);
+			String source = bw.readLine();
+			
+//			System.out.println(source);
+			int num = GetFrequency(source, key);;
 ```
 5. 实例化对象
 ```
@@ -88,68 +104,59 @@
 		Course c2=new Course();
 		Teacher t1=new Teacher(33, "张老师", false, 30);
 ```
-6. 设置和获取对象成员值
+6. 异常判断
 ```
-public int getCnumber() {
-		return cnumber;
-	}
-	public void setCnumber(int cnumber) {
-		this.cnumber = cnumber;
-	}
-	public String getCname() {
-		return cname;
-	}
-	public void setCname(String cname) {
-		this.cname = cname;
-	}
-	public String getAdress() {
-		return adress;
-	}
-	public void setAdress(String adress) {
-		this.adress = adress;
-	}
-	public String getTeacher() {
-		return teacher;
-	}
-	public void setTeacher(String teacher) {
-		this.teacher = teacher;
-	}
-	public String getTime() {
-		return time;
-	}
-	public void setTime(String time) {
-		this.time = time;
-	}
+		}catch(InputMismatchException e){
+			System.out.println("您输入的数据错误\n");
+			continue input;
+		}
 ```
-6. 变量赋值
+6. 封装数据源
 ```
-//		为变量赋值
-//		s1.setCourse(c2);
-		s1.setCourse(c1);
-		t1.setCourse(c1);
-		s1.setTea(t1);
+		//封装数据源
+		FileReader fr=new FileReader("D:\\Java\\A.txt");
+		//封装
+		FileWriter fw=new FileWriter("D:\\Java\\B.txt");
+//		读写数据
 ```
-7. 调用方法
+7. 每7个汉字加入一个标点符号，奇数时加“，”，偶数时加“。”
 ```
-//		判断学生是否选课
-		if(s1.getC().getCnumber()==0){
-			System.out.println(s1.show()+"\n该学生已经退课");
-		}else
-			System.out.println(s1.toString());
+				//每7个汉字加入一个标点符号，奇数时加“，”，偶数时加“。”
+				for(int a=2;a<=238;a++){				
+					fw.write(fr.read());
+				if( a%7 == 0 && a%14 !=0)
+				{
+					fw.write("，");
+					
+				}
+				if(a%14==0){
+					fw.write(" 。");
+					fw.write(line);
+					}
+				}
+```
+8. 文件内容写入
+```
+		int len=0 ;
+		fw.write(s1.toString());
+		fw.write(line);
+		while((len=fr.read()) !=-1){
+				fw.write(len);
 ```
 # 五、实验结果
-1. 学生选课成功，并且课程中老师信息与所给老师信息相等时（一门课程只由一门老师教授），输出结果
+1. 文件处理之前
 
-![RUNOOB 图标](https://p.qlogo.cn/qqmail_head/ajNVdqHZLLCjXzl2bwPUPHEQOOzARqLRmZFqzPgyAkzdweOBibC68M8Sof8atNPjFjb2wpZzEibR0/0)
+![RUNOOB 图标](http://p.qlogo.cn/qqmail_head/7YEOYibLSdBqZVD4CyGuGu0fhvWt8ibzgjcEia3RtyTCL1jXRqGmNCvFYVZhRm3GD21IzReFJpz564/0)
 
-2. 学生选课成功，并且课程中老师信息与所给老师信息不相等时（一门课程只由一门老师教授），输出结果
+2. 输入所要统计古诗中某个字或词，以及学生信息，数次统计次数
 
-![RUNOOB 图标](https://p.qlogo.cn/qqmail_head/ajNVdqHZLLCjXzl2bwPUPHEQOOzARqLRmZFqzPgyAkxxj7ugl4HFaGiaYWicV4yplW9ky95b9BPns/0)
+![RUNOOB 图标](http://p.qlogo.cn/qqmail_head/7YEOYibLSdBqZVD4CyGuGu0fhvWt8ibzgjEfV5333mJcsun6NA5VrBsRm3mrT4sVwG5Z7JSBFg2tY/0)
 
-3. 学生退课成功时，输出结果，只输出学生信息
+3. 并且把“古诗处理后的输出”结果存储到学生基本信息所在的文本文件A中，运行之后
 
-![RUNOOB 图标](https://p.qlogo.cn/qqmail_head/ajNVdqHZLLCjXzl2bwPUPHEQOOzARqLRmZFqzPgyAkxkiaN2uoskv5iavEaia1oQicokVAG3ET75cOM/0)
+![RUNOOB 图标](http://p.qlogo.cn/qqmail_head/7YEOYibLSdBqZVD4CyGuGu0fhvWt8ibzgjEfV5333mJctrNMMgqlgiaib15DQUvMtT0u1SlQBTAcTR0/0)
 
 
 # 六、实验感想
-通过本次实验所写的程序代码，通过动手编程实现，观察输出结果，了解系统中的实体及其关系，学会定义类中的属性以及方法，掌握面向对象的类设计方法（属性、方法）。 学会使用类的继承用法，通过构造方法实例化对象，学会使用super()，用于实例化子类，调用父类中的构造方法，学会使用Object根类的toString（）方法,应用在相关对象的信息输出中。
+通过本次实验所写的程序代码，通过动手编程实现，观察输出结果，掌握字符串String及其方法的使用，了解String中的使用约束，学会了文件的读取/写入方法，深入了解FileWriter中方法的具体使用，熟练掌握掌握异常处理结构，并在程序中根据输入情况做异常处理。熟练掌握数据交互式输入方法。
+
